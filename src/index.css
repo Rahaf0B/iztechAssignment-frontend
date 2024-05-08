@@ -1,0 +1,162 @@
+body {
+  margin: 0;
+  font-family: "InterRegular", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "InterRegular", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+}
+
+.side-container {
+  width: 100%;
+  height: 100%;
+}
+
+@font-face {
+  font-family: "InterRegular";
+  src: url("./utlis/fonts/Inter/Inter-Regular.ttf");
+}
+.page-label {
+  width: 100%;
+  height: 36px;
+  font-size: 36px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-align: center;
+  color: #171923;
+}
+
+.custom-table {
+  border-collapse: collapse;
+}
+
+.custom-table thead th {
+  border-bottom: none;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+@media (max-width: 1025px) {
+  .container-img-box {
+    display: none;
+  }
+
+  .login-data-box {
+    width: 100% !important;
+  }
+}
+
+.show {
+  z-index: 2;
+  display: block;
+  transition: 800ms;
+  opacity: 1;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 77px;
+  /* width: 1000px; */
+  width: 65%;
+  height: 500px;
+  border-radius: 15px;
+  background-color: white;
+  box-shadow: 6px 6px 11px #d2dce6, -6px -6px 11px #edf2f7;
+}
+.side-image-container-box {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.container-img-box {
+  height: 100vh;
+  width: 100%;
+  background-color: #00939f;
+}
+
+.login-data-box {
+  height: 100vh;
+  width: 100%;
+  background-color: white;
+}
+
+.show.active {
+  z-index: 2;
+  transform: translateY(100px) scale(0) rotateY(180deg);
+  opacity: 0;
+}
+
+.form-box {
+  width: auto;
+
+  margin-left: auto;
+  margin-right: auto;
+  text-align: right;
+  margin-top: 40px;
+
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+}
+
+.label-title-add,
+.label-description-add {
+  margin-bottom: 14px;
+}
+input {
+  text-align: right;
+}
+.TextField-Email-login-signup,
+.TextField-name-login-signup,
+.TextField-title-add {
+  margin-bottom: 36px;
+}
+
+.label-Email-login-signup,
+.label-password-login-signup,
+.label-name-login-signup {
+  margin-top: 12px;
+  color: #5e89d6;
+}
+
+.div-btn-login-form-login {
+  margin-top: 15px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#btn-sign-up-login-form {
+  font-size: inherit;
+  padding: 0 !important;
+}
+.create-account-login-form {
+  display: flex;
+  margin-top: 20px;
+  flex-direction: row-reverse;
+  margin-left: auto;
+  gap: 5px;
+  margin-right: auto;
+  width: fit-content;
+  align-items: center;
+}
