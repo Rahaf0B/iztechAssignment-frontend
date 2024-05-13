@@ -6,8 +6,10 @@ import SideContainer from "../component/SideContainer";
 import signupImg from "../utlis/assets/sign up.png";
 import styled, { css } from "styled-components";
 import person from "../utlis/assets/iconwrappeh.svg";
-import { usePatch, usePost } from "../CustomHoook/APIHook";
+import { usePatch, usePost } from "../CustomHook/APIHook";
 import { signIn } from "../Providers/UserProvider";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+
 interface UserData {
   user_name: string;
   email: string;
@@ -167,6 +169,22 @@ function SignUp() {
     textAlign: "left",
     color: "#171c26",
   });
+
+  const ContainerIconDevider=styled("div")({
+    display:"flex",
+    height:"100%",
+    zIndex: 1,
+    position: "absolute",
+    alignItems: "center",
+    gap:"14px",
+    marginLeft:"15px"
+    
+      })
+      const DividerVertical =styled("div")({
+        width: "1px",
+        height: "40px",
+        backgroundColor: "#cfd9e0",
+      })
   return (
     <SideContainer
       header={"هيا لنبدء رحلتك سويا"}
@@ -234,6 +252,20 @@ function SignUp() {
                 value={userData?.password}
                 border={`1px solid ${isError ? "#e00909" : "#E1E8F1"}`}
                 labelColor={isError ? "#e00909" : "#171c26"}
+                Icon={
+                  <ContainerIconDevider>
+                    <VisibilityIcon
+                      style={{
+                        border: "none",
+                        color: "black",
+                        height: 25,
+                        width: 25,
+                        borderRadius: "50%",
+                      }}
+                    />
+                    <DividerVertical />
+                  </ContainerIconDevider>
+                }
               />
 
               <PasswordLabelContainer>

@@ -14,6 +14,7 @@ type ButtonFieldProps = {
   width: number | string;
   height: number | string;
   type?: "submit" | "button" | "reset";
+  disabled?: boolean;
   handleClick?: (args: any) => void;
 };
 
@@ -30,6 +31,7 @@ const Button: FC<ButtonFieldProps> = ({
   fontSize = "16px",
   width,
   height,
+  disabled = false,
   handleClick,
 }) => {
   const style = {
@@ -41,7 +43,9 @@ const Button: FC<ButtonFieldProps> = ({
     fontSize,
     width,
     height,
+    disabled,
     padding: 0,
+    cursor: disabled ? "not-allowed" : "pointer",
   };
 
   return (

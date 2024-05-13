@@ -46,9 +46,9 @@ export function usePost(url: string) {
         setError(error);
       }
     }
-    if (requestBody !== null) {
+   
       fetchData();
-    }
+    
   }, [url, requestBody]);
 
   return {
@@ -101,9 +101,9 @@ export function usePatch(url: string) {
         setError(error);
       }
     }
-    if (requestBody !== null) {
+  
       fetchData();
-    }
+    
   }, [url, requestBody]);
 
   return {
@@ -160,9 +160,8 @@ export function usePut(url: string) {
         setError(error);
       }
     }
-    if (requestBody !== null) {
       fetchData();
-    }
+    
   }, [url, requestBody]);
 
   return {
@@ -203,5 +202,39 @@ export function useGet(url: string) {
     data,
     error,
     loading,
+  };
+}
+
+
+
+export function useDelete(url:string) {
+  const [error, setError] = useState(null);
+  const [requestBody, setRequestBody] = useState(null);
+
+  useEffect(() => {
+    async function deleteData() {
+      try {
+
+        const session_token = localStorage.getItem("session_token")
+        ? localStorage.getItem("session_token")
+        : null;
+      const response = session_token
+        ? axios.delete(url, { headers: { Authorization: `Bearer ${session_token}` } })
+        : await axios.delete(url);
+
+      } catch (error:any) {
+        setError(error);
+      }
+    }
+    
+      deleteData();
+    
+  }, [url, requestBody]);
+
+  return {
+    error,
+    setNewRequestBody: (newRequestBody?:any) => {
+      setRequestBody(newRequestBody ? newRequestBody :  null);
+    },
   };
 }

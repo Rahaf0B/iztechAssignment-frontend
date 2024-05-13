@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 import SideContainer from "../component/SideContainer";
 import loginImg from "../utlis/assets/sign in.png";
 import styled, { css } from "styled-components";
-import { usePost } from "../CustomHoook/APIHook";
+import { usePost } from "../CustomHook/APIHook";
 import { signIn } from "../Providers/UserProvider";
 import errorIcone from "../utlis/assets/Icon _ Alert.svg";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+
 function SignIn() {
   const navigate = useNavigate();
 
@@ -92,6 +94,21 @@ function SignIn() {
     width: "19.5px",
     height: "19.5px",
   });
+
+  const ContainerIconDevider = styled("div")({
+    display: "flex",
+    height: "100%",
+    zIndex: 1,
+    position: "absolute",
+    alignItems: "center",
+    gap: "14px",
+    marginLeft: "15px",
+  });
+  const DividerVertical = styled("div")({
+    width: "1px",
+    height: "40px",
+    backgroundColor: "#cfd9e0",
+  });
   return (
     <SideContainer
       header={"مرحبا بك في موقع مهمتك"}
@@ -140,6 +157,20 @@ function SignIn() {
                 label="كلمة المرور "
                 labelColor={isError ? "#e00909" : "#171c26"}
                 type="password"
+                Icon={
+                  <ContainerIconDevider>
+                    <VisibilityIcon
+                      style={{
+                        border: "none",
+                        color: "black",
+                        height: 25,
+                        width: 25,
+                        borderRadius: "50%",
+                      }}
+                    />
+                    <DividerVertical />
+                  </ContainerIconDevider>
+                }
                 border={`1px solid ${isError ? "#e00909" : "#E1E8F1"}`}
               />
 

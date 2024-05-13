@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 import {
   Table,
@@ -20,7 +20,10 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DropMenu from "./DropMenu";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { useGet } from "../CustomHoook/APIHook";
+import { useGet, usePatch } from "../CustomHook/APIHook";
+import EditElement from "./EditElement";
+import { useDataContext, DataContextType } from "./MainHomeComponent";
+import DeleteElement from "./DeleteElement";
 
 interface Row {
   id: number;
@@ -29,35 +32,115 @@ interface Row {
   status: boolean;
 }
 
-interface LayoutProps {
-  data: Row[];
-}
-function TableContent(props: LayoutProps) {
+export type EditComponentContextType = {
+  isShowComponent?: boolean;
+  setIsShowComponent?: any;
+  title?: string;
+  description?: string;
+  id?: number;
+  data?: any;
+  error?: any;
+  setNewRequestBody?: any;
+  editItem?: any;
+  setEditItem?: any;
+};
+
+export type DeleteComponentContextType = {
+  isShowComponent?: boolean;
+  setIsShowComponent?: any;
+  id?: number;
+  setNewDeleteRequestBody?: any;
+  deleteError?: any;
+  setTodoId?: any;
+  deleteItem?: any;
+  setDeleteItem?: any;
+};
+
+export const EditComponentContext = createContext(
+  undefined as EditComponentContextType
+);
+export const useEditComponentContext = () =>
+  useContext(EditComponentContext as undefined);
+
+export const DeleteComponentContext = createContext(
+  undefined as DeleteComponentContextType
+);
+export const useDeleteComponentContext = () =>
+  useContext(DeleteComponentContext as undefined);
+
+function TableContent() {
+  const {
+    data,
+    todoId,
+    setTodoId,
+    editData,
+    errorEditData,
+    setEditRequest,
+    setNewDeleteRequestBody,
+    deleteError,
+    editItem,
+    setDeleteItem,
+    deleteItem,
+    setEditItem,
+  } = useDataContext() as DataContextType;
+
   const [sortColumn, setSortColumn] = React.useState<keyof Row>("id");
   const [sortOrder, setSortOrder] = React.useState("asc");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [showComponentEdit, setShowComponentEdit] = useState(false);
   const [showComponentDelete, setShowComponentDelete] = useState(false);
+  // const [todoId, setTodoId] = useState<number | undefined>(undefined);
+  const [todoTitle, setTodoTitle] = useState<string | undefined>(undefined);
+  const [todoDescription, setTodoDescription] = useState<string | undefined>(
+    undefined
+  );
 
-  const toggleEditComponent = () => {
+  const {
+    data: editedData,
+    error,
+    setNewRequestBody,
+  } = usePatch(`http://localhost:8080/todo/edit-todo/${todoId}`);
+
+  const handelOnOpenMenu = (id: number) => {
+    setTodoId((prevId) => (id !== undefined ? id : prevId));
+  };
+  const handleChangeStatus = (status: boolean) => {
+    setNewRequestBody({
+      status: status,
+      session_token: localStorage.getItem("session_token"),
+    });
+  };
+
+  const toggleEditComponent = (
+    id: number,
+    title?: string,
+    description?: string
+  ) => {
+    setTodoId((prevId) => (id !== undefined ? id : prevId));
+    setTodoTitle((prevTitle) => (title !== undefined ? title : prevTitle));
+    setTodoDescription((prevDescription) =>
+      description !== undefined ? description : prevDescription
+    );
     setShowComponentEdit(!showComponentEdit);
   };
 
-  const toggleDeleteComponent = () => {
+  const toggleDeleteComponent = (id: number) => {
+    setTodoId((prevId) => (id !== undefined ? id : prevId));
+
     setShowComponentDelete(!showComponentDelete);
   };
 
   const options = {
     optionOne: {
       title: "مكتملة",
-      handler: () => {},
+      handler: () => handleChangeStatus(true),
       color: "#00939f",
       backgroundColor: "#e1fcef  ",
     },
     optionTwo: {
       title: "غير مكتملة",
-      handler: () => {},
+      handler: () => handleChangeStatus(false),
       color: "#171923",
       backgroundColor: "#e9edf5   ",
     },
@@ -79,8 +162,8 @@ function TableContent(props: LayoutProps) {
   };
 
   const sortedRows = React.useMemo(() => {
-    if (props.data && props.data.length > 0) {
-      return props.data.slice().sort((a, b) => {
+    if (data && data.length > 0) {
+      return data.slice().sort((a, b) => {
         const aValue = a[sortColumn] || "";
         const bValue = b[sortColumn] || "";
 
@@ -93,7 +176,7 @@ function TableContent(props: LayoutProps) {
     } else {
       return [];
     }
-  }, [props.data, sortColumn, sortOrder]);
+  }, [data, sortColumn, sortOrder]);
 
   const paginatedRows = sortedRows.slice(
     page * rowsPerPage,
@@ -183,47 +266,59 @@ function TableContent(props: LayoutProps) {
                 #
               </Box>
             </TableCell>
-            <TableCell></TableCell> 
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody sx={{ backgroundColor: "#f9fafc", borderAxis: "none" }}>
-          {props.data.map((row) => (
+          {data.map((row, index) => (
             <TableRow
               sx={{ textAlign: "right", borderAxis: "none" }}
               key={row.id}
+              id={"row" + row.id}
             >
               <TableCell
-                sx={{ textAlign: "right", paddingRight: 0, paddingLeft: 0 }}
+                sx={{
+                  textAlign: "right",
+                  paddingRight: 0,
+                  paddingLeft: "20px",
+                  width: "25px",
+                }}
               >
                 <DeleteIcon
                   sx={{
                     cursor: "pointer",
                     color: "rgba(23, 25, 35, 0.7)",
-                    width: "17px",
-                    height: "17px",
+                    width: "25px",
+                    height: "25px",
                   }}
-                  onClick={toggleDeleteComponent}
+                  onClick={() => toggleDeleteComponent(row.id)}
                 ></DeleteIcon>
               </TableCell>{" "}
               <TableCell
-                sx={{ textAlign: "right", paddingRight: 0, paddingLeft: 0 }}
+                sx={{
+                  textAlign: "right",
+                  paddingRight: 0,
+                  paddingLeft: 0,
+                  width: "25px",
+                }}
               >
                 <ModeEditIcon
                   sx={{
                     cursor: "pointer",
                     color: "rgba(23, 25, 35, 0.7)",
-                    width: "17px",
-                    height: "17px",
+                    width: "25px",
+                    height: "25px",
                   }}
-                  onClick={toggleEditComponent}
+                  onClick={() =>
+                    toggleEditComponent(row.id, row.title, row.description)
+                  }
                 ></ModeEditIcon>
               </TableCell>{" "}
-     
               <TableCell
                 sx={{
                   textAlign: "right",
                   width: "84px",
-                  paddingRight: "20px",
+                  paddingRight: "10px",
                   paddingLeft: "40px",
                 }}
               >
@@ -242,7 +337,8 @@ function TableContent(props: LayoutProps) {
                   elementBorderRadius={4}
                   elementHeight="20px"
                   elementWidth="88px"
-                ></DropMenu>{" "}
+                  handelOnOpenMenu={() => handelOnOpenMenu(row.id)}
+                ></DropMenu>
               </TableCell>
               <TableCell
                 sx={{
@@ -250,6 +346,9 @@ function TableContent(props: LayoutProps) {
                   paddingRight: "20px",
                   paddingLeft: "0",
                   width: "fit-content",
+                  whiteSpace: "normal",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                   maxWidth: "350px",
                 }}
               >
@@ -260,6 +359,9 @@ function TableContent(props: LayoutProps) {
                   textAlign: "right",
                   paddingRight: "20px",
                   paddingLeft: "0",
+                  whiteSpace: "normal",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
               >
                 {row.title ? row.title : "بدون عنوان"}
@@ -271,7 +373,7 @@ function TableContent(props: LayoutProps) {
                   paddingLeft: "0",
                 }}
               >
-                {row.id}
+                {index + 1}
               </TableCell>
               <TableCell
                 sx={{
@@ -300,6 +402,37 @@ function TableContent(props: LayoutProps) {
         itemsPerPage={15}
         totalItems={20}
       ></TableFooter>
+      <EditComponentContext.Provider
+        value={{
+          isShowComponent: showComponentEdit,
+          setIsShowComponent: setShowComponentEdit,
+          id: todoId,
+          title: todoTitle,
+          description: todoDescription,
+          data: editData,
+          error: errorEditData,
+          setNewRequestBody: setEditRequest,
+          editItem,
+          setEditItem,
+        }}
+      >
+        <EditElement></EditElement>
+      </EditComponentContext.Provider>
+
+      <DeleteComponentContext.Provider
+        value={{
+          isShowComponent: showComponentDelete,
+          setIsShowComponent: setShowComponentDelete,
+          id: todoId,
+          setNewDeleteRequestBody,
+          deleteError,
+          setTodoId,
+          deleteItem,
+          setDeleteItem,
+        }}
+      >
+        <DeleteElement></DeleteElement>
+      </DeleteComponentContext.Provider>
     </TableContainer>
   );
 }

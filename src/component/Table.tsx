@@ -5,17 +5,15 @@ import DropMenu from "./DropMenu";
 import styled from "styled-components";
 import TableHeading from "./TableHeading";
 import TableContent from "./TableContent";
-
+import { DataContext, useDataContext } from "./MainHomeComponent";
 interface Row {
   id: number;
   title?: string;
   description?: string;
   status: boolean;
 }
-interface LayoutProps {
-  data: Row[];
-}
-const Table = (props: LayoutProps) => {
+
+const Table = () => {
   const TableContainer = styled("div")({
     width: "1020px",
     height: "fit-content",
@@ -32,7 +30,7 @@ const Table = (props: LayoutProps) => {
   return (
     <TableContainer>
       <TableHeading></TableHeading>
-      <TableContent data={props.data}></TableContent>
+      <TableContent></TableContent>
     </TableContainer>
   );
 };

@@ -6,23 +6,15 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 import DropMenu from "./DropMenu";
 function Header() {
+  const logout = () => {
+    localStorage.clear();
+  };
   const options = {
     optionOne: {
       title: "تسجيل الخروج",
-      handler: () => {},
+      handler: () => logout,
       color: "#e00909 ",
     },
-  };
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const open = Boolean(anchorEl);
-
-  const handleClose = () => {
-    setAnchorEl(null);
   };
 
   const Header = styled("header")({
@@ -32,33 +24,32 @@ function Header() {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: "22px 210px",
+    padding: "22px 240px",
     boxShadow: "inset 0 -1px 1px 0 rgba(0, 0, 0, 0.1)",
     backgroundColor: "#fff",
   });
 
   const ContainerOptions = styled("div")({
-    width: "100px",
+    width: "fit-content",
     height: "40px",
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
     gap: "16px",
     padding: 0,
   });
 
   const ImageContainer = styled("img")({
-    width: "50px",
-    height: "50px",
+    width: "40px",
+    height: "40px",
     padding: 0,
     borderRadius: "999px",
     backgroundColor: "rgba(203, 213, 224, 0.7)",
   });
 
   const IconContainer = styled("img")({
-    width: "50px",
-    height: "50px",
+    width: "40px",
+    height: "40px",
   });
   return (
     <Header>
@@ -66,7 +57,7 @@ function Header() {
         <DropMenu
           options={options}
           icon={<KeyboardArrowDownIcon />}
-          elementWidth={"5px"}
+          elementWidth={"fit-content"}
           elementHeight={"fit-content"}
           elementBorder="none"
           elementBorderRadius={0}

@@ -4,12 +4,17 @@ import styled from "styled-components";
 
 import NoContentImage from "../utlis/assets/empty.png";
 import Button from "./Button";
-
+import { useAddComponentContext } from "./MainHomeComponent";
+type AddComponentContextType = {
+  isShowComponent?: boolean;
+  setIsShowComponent?: any;
+};
 function NoContent() {
-  const [showComponentAdd, setShowComponentAdd] = useState(false);
+  const { isShowComponent, setIsShowComponent } =
+    useAddComponentContext() as AddComponentContextType;
 
   const toggleAddComponent = () => {
-    setShowComponentAdd(!showComponentAdd);
+    setIsShowComponent(!isShowComponent);
   };
 
   const ContainerLayout = styled("div")({

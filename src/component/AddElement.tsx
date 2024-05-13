@@ -1,21 +1,57 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 
 import styled from "styled-components";
 import TextField from "./TextField";
 import Button from "./Button";
+import ShadowComponent from "./ShadowComponent";
+import {
+  useAddComponentContext,
+  AddComponentContext,
+  AddComponentContextType,
+} from "./MainHomeComponent";
+import { usePost } from "../CustomHook/APIHook";
 
 function AddElement() {
+  const [isError, setIsError] = React.useState(false);
+
+  const {
+    isShowComponent,
+    setIsShowComponent,
+    data,
+    error,
+    setNewRequestBody,
+  } = useAddComponentContext() as AddComponentContextType;
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+
+    const title = data.get("title");
+    const description = data.get("description");
+    setNewRequestBody({
+      title: title,
+      description: description,
+      session_token: localStorage.getItem("session_token"),
+    });
+  };
+
+  const handleCloseElement = () => {
+    setIsShowComponent(false);
+  };
   const ContainerLayout = styled("div")({
     width: "439px",
     height: "490px",
     marginLeft: "auto",
     marginRight: "auto",
-    marginTop: "10%",
     backgroundColor: "#fff",
     borderRadius: "8px",
     boxShadow:
       " 0 2px 4px -2px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+    position: "fixed",
+    left: "38%",
+    top: "35%",
+    display: isShowComponent ? "block" : "none",
   });
 
   const ContainerFlex = styled("div")({
@@ -79,68 +115,79 @@ function AddElement() {
   });
 
   return (
-    <ContainerLayout>
-      <ContainerFlex>
-        <ComponentHeader>
-          <CloseIcon></CloseIcon>
-          <HeaderText>اضافة مهمة جديدة</HeaderText>
-        </ComponentHeader>
-        <ContainerTextField>
-          <TextField
-            id="Title-add"
-            name="title"
-            labelClassName="label-title-add"
-            className="TextField-title-add"
-            placeholder="ادخل عنوان المهمة"
-            width={391}
-            height={54}
-            size="md"
-            label="عنوان المهمة"
-            labelColor="#171c26"
-            type="text"
-            handleChange={() => {}}
-            borderRadius={10}
-            border={`1px solid  #E1E8F1`}
-          />
-          <LabelInputField className="label-description-add">
-            الوصف
-          </LabelInputField>
-          <TextParagraph
-            className="TextField-description-add"
-            placeholder="... ادخل الوصف "
-          ></TextParagraph>
-        </ContainerTextField>
+    <ShadowComponent showElement={isShowComponent as boolean}>
+      <ContainerLayout>
+        <ContainerFlex>
+          <ComponentHeader>
+            <CloseIcon
+              style={{ cursor: "pointer" }}
+              onClick={handleCloseElement}
+            ></CloseIcon>
+            <HeaderText>اضافة مهمة جديدة</HeaderText>
+          </ComponentHeader>
+          <form
+            onSubmit={(e) => {
+              handleSubmit(e);
+            }}
+          >
+            <ContainerTextField>
+              <TextField
+                id="Title-add"
+                name="title"
+                labelClassName="label-title-add"
+                className="TextField-title-add"
+                placeholder="ادخل عنوان المهمة"
+                width={391}
+                height={54}
+                size="md"
+                label="عنوان المهمة"
+                labelColor="#171c26"
+                type="text"
+                handleChange={() => {}}
+                borderRadius={10}
+                border={`1px solid  #E1E8F1`}
+              />
+              <LabelInputField className="label-description-add">
+                الوصف
+              </LabelInputField>
+              <TextParagraph
+                className="TextField-description-add"
+                name="description"
+                placeholder="... ادخل الوصف "
+              ></TextParagraph>
+            </ContainerTextField>
 
-        <ContainerButton>
-          <Button
-            className="options-button"
-            id="btn-add-todo"
-            backgroundColor="#00939f"
-            label="اضافة مهمة"
-            type="submit"
-            color="white"
-            height={40}
-            width={102}
-            borderRadius={10}
-            handleClick={() => {}}
-            fontSize={12}
-          ></Button>
-          <Button
-            className="options-button"
-            id="btn-cancel-todo"
-            backgroundColor="#fff"
-            label="الغاء العملية"
-            type="submit"
-            color="#171923"
-            height={40}
-            width={102}
-            borderRadius={10}
-            handleClick={() => {}}
-            fontSize={12}
-          ></Button>
-        </ContainerButton>
-      </ContainerFlex>
-    </ContainerLayout>
+            <ContainerButton>
+              <Button
+                className="options-button"
+                id="btn-add-todo"
+                backgroundColor="#00939f"
+                label="اضافة مهمة"
+                type="submit"
+                color="white"
+                height={40}
+                width={102}
+                borderRadius={10}
+                handleClick={() => {}}
+                fontSize={12}
+              ></Button>
+              <Button
+                className="options-button"
+                id="btn-cancel-todo"
+                backgroundColor="#fff"
+                label="الغاء العملية"
+                color="#171923"
+                height={40}
+                width={102}
+                borderRadius={10}
+                handleClick={handleCloseElement}
+                fontSize={12}
+              ></Button>
+            </ContainerButton>
+          </form>
+        </ContainerFlex>
+      </ContainerLayout>
+    </ShadowComponent>
   );
 }
 

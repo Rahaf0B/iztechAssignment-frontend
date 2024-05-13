@@ -15,7 +15,7 @@ interface LayoutProps {
 
       color: string;
 
-      handler: () => void;
+      handler: (...args: any) => void;
     };
   };
   value?: string;
@@ -26,6 +26,7 @@ interface LayoutProps {
   elementBorderRadius: number;
   backgroundColor?: string;
   textColor?: string;
+  handelOnOpenMenu?: (...args: any) => void;
 }
 function DropMenu(props: LayoutProps) {
   const [option, setOption] = React.useState(props.value);
@@ -37,7 +38,13 @@ function DropMenu(props: LayoutProps) {
   );
 
   return (
-    <Dropdown>
+    <Dropdown
+      onOpenChange={
+        props.handelOnOpenMenu
+          ? (...args) => props.handelOnOpenMenu(args)
+          : () => {}
+      }
+    >
       <MenuButton
         sx={{
           width: props.elementWidth,

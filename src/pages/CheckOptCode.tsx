@@ -7,7 +7,7 @@ import passwordImage from "../utlis/assets/forget password 2.png";
 import styled from "styled-components";
 import reloadIcon from "../utlis/assets/reboot.png";
 import errorIcone from "../utlis/assets/Icon _ Alert.svg";
-import { usePut } from "../CustomHoook/APIHook";
+import { usePut } from "../CustomHook/APIHook";
 
 function CheckOptCode() {
   const navigate = useNavigate();

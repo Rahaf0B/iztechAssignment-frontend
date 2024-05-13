@@ -6,7 +6,7 @@ import SideContainer from "../component/SideContainer";
 import passwordImage from "../utlis/assets/forget password 1.png";
 import styled, { css } from "styled-components";
 import person from "../utlis/assets/iconwrappeh.svg";
-import { usePost, usePut } from "../CustomHoook/APIHook";
+import { usePost, usePut } from "../CustomHook/APIHook";
 import errorIcone from "../utlis/assets/Icon _ Alert.svg";
 interface Iuser {
   Email: string;

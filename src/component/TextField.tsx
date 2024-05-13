@@ -1,25 +1,31 @@
 import React, { FC } from "react";
 import styled, { css } from "styled-components";
+import { Input } from "@mui/base/Input";
+
+import InputAdornment from "@mui/material/InputAdornment";
 
 type TextFieldProps = {
   id?: string;
   name: string;
   className: string;
   placeholder?: string;
-  size: "sm" | "md" | "lg" ;
-  width:number;
-  height:number;
+  size: "sm" | "md" | "lg";
+  width: number;
+  height: number;
   borderRadius: number;
-  labelClassName?:string;
+  labelClassName?: string;
   label?: string;
   type?: string;
   border?: string;
   color?: string;
   value?: string | number;
   ref?: any;
-  labelColor?: string
-  textAlign?:"right" | "left" | "center";
-  handleChange?: (args:any) => void;
+  labelColor?: string;
+  textAlign?: "right" | "left" | "center";
+  handleChange?: (args: any) => void;
+  Icon?: React.ReactNode;
+  IconPlacement?: string;
+  IconHandle?: (args: any) => void;
 };
 
 const TextField: FC<TextFieldProps> = ({
@@ -27,7 +33,7 @@ const TextField: FC<TextFieldProps> = ({
   name = "",
   className = "",
   placeholder = "",
-  labelClassName="",
+  labelClassName = "",
   size,
   width,
   height,
@@ -38,16 +44,11 @@ const TextField: FC<TextFieldProps> = ({
   type = "text",
   border = "",
   value = "",
-  labelColor="#171c26",
+  labelColor = "#171c26",
   ref,
-  textAlign="right",
+  textAlign = "right",
+  Icon = null,
 }) => {
-  let scale = 4;
-  if (size === "sm") {
-    scale = 3;
-  } else if (size === "lg") {
-    scale = 8;
-  }
   const style = {
     border,
     borderRadius,
@@ -55,35 +56,44 @@ const TextField: FC<TextFieldProps> = ({
     color,
     width,
     height,
-    textAlign:textAlign ? textAlign : "right" ,
-
+    textAlign: textAlign ? textAlign : "right",
   };
 
-  const LabelInputField= styled('div')({
-   
+  const LabelInputField = styled("div")({
     fontSize: "16px",
     fontWeight: "500",
     lineHeight: "1.25",
     letterSpacing: "-0.15px",
-    textAlign:"right",
-    color:labelColor,
-  })
+    textAlign: "right",
+    color: labelColor,
+  });
 
   return (
     <div>
-      <LabelInputField >{label}</LabelInputField>
+      <LabelInputField>{label}</LabelInputField>
       <div className={labelClassName}></div>
-      <input
-        id={id}
-        name={name}
-        ref={ref}
-        className={className}
-        type={type}
-        onChange={handleChange}
-        style={style}
-        placeholder={placeholder}
-        defaultValue={value}
-      ></input>
+      <Input
+        style={{ position: Icon != null ? "relative" : "static" }}
+        slotProps={{
+          input: {
+            id: id,
+
+            name,
+            ref,
+            className,
+            type,
+            onChange: handleChange,
+            style,
+            placeholder,
+            defaultValue: value,
+          },
+        }}
+        startAdornment={
+          <InputAdornment position="end" sx={{ height: "100%" }}>
+            {Icon ? <span>{Icon}</span> : null}
+          </InputAdornment>
+        }
+      ></Input>
     </div>
   );
 };

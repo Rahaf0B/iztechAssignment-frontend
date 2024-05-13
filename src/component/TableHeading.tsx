@@ -5,13 +5,20 @@ import DropMenu from "./DropMenu";
 import styled from "styled-components";
 import TextField from "./TextField";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import Button from "./Button";
+import SearchIcon from "@mui/icons-material/Search";
 
+import Button from "./Button";
+import { useAddComponentContext } from "./MainHomeComponent";
+type AddComponentContextType = {
+  isShowComponent?: boolean;
+  setIsShowComponent?: any;
+};
 const TableHeading = () => {
-  const [showComponentAdd, setShowComponentAdd] = useState(false);
+  const { isShowComponent, setIsShowComponent } =
+    useAddComponentContext() as AddComponentContextType;
 
   const toggleAddComponent = () => {
-    setShowComponentAdd(!showComponentAdd);
+    setIsShowComponent(!isShowComponent);
   };
   const options = {
     optionOne: {
@@ -41,7 +48,7 @@ const TableHeading = () => {
     flexDirection: "row",
     alignItems: "center",
     paddingLeft: "20px",
-    paddingRight: "20px",
+    paddingRight: "80px",
     justifyContent: "space-between",
   });
 

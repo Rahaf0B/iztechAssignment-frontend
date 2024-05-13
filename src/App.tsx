@@ -7,7 +7,8 @@ import ForgetPassword from "./pages/ForgetPassword";
 import CheckOptCode from "./pages/CheckOptCode";
 import Home from "./pages/Home";
 import ChangePassword from "./pages/ChangePassword";
-
+import AddElement from "./component/AddElement";
+import DeleteElement from "./component/DeleteElement";
 
 function App() {
   
