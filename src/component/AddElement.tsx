@@ -13,7 +13,6 @@ import {
 import { usePost } from "../CustomHook/APIHook";
 
 function AddElement() {
-  const [isError, setIsError] = React.useState(false);
 
   const {
     isShowComponent,

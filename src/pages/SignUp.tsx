@@ -16,9 +16,6 @@ interface UserData {
   password: string;
 }
 
-interface imageData {
-  file: File;
-}
 function SignUp() {
   const navigate = useNavigate();
 
@@ -59,7 +56,9 @@ function SignUp() {
     if (status == 400 || status == 409) {
       setIsError(true);
     } else if (data) {
-      signIn(data?.session_token as string);
+      const sessionToken: string | undefined = data?.session_token;
+      if (sessionToken)
+     { signIn(sessionToken);}
 
       if (
         localStorage.getItem("session_token") &&

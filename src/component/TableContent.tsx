@@ -20,11 +20,9 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DropMenu from "./DropMenu";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { useGet, usePatch } from "../CustomHook/APIHook";
 import EditElement from "./EditElement";
 import { useDataContext, DataContextType } from "./MainHomeComponent";
 import DeleteElement from "./DeleteElement";
-import { useNavigate } from "react-router-dom";
 
 interface Row {
   id: number;
@@ -83,7 +81,6 @@ function TableContent() {
   const [todoDescription, setTodoDescription] = useState<string | undefined>(
     undefined
   );
-  const [isError, setIsError] = useState(false);
 
   const handelOnOpenMenu = (id: number) => {
     setTodoId((prevId) => (id !== undefined ? id : prevId));
@@ -129,11 +126,7 @@ function TableContent() {
     },
   };
 
-  const handleChangePage = (event: any, newPage: any) => {
-    setPage(newPage);
-  };
 
-  const handleChangeRowsPerPage = (event: any) => {};
 
   const handleSort = (column: any) => {
     if (sortColumn === column) {

@@ -15,33 +15,44 @@ import {
 import { useDelete } from "../CustomHook/APIHook";
 
 function DeleteElement() {
-  const { isShowComponent, setIsShowComponent, id } =
-    useDeleteComponentContext() as DeleteComponentContextType;
+  const {
+    isShowComponent,
+    setIsShowComponent,
+    id,
+  } = useDeleteComponentContext() as DeleteComponentContextType;
   const navigate = useNavigate();
 
-  const [todoId, setTodoId] = useState(null);
+  
 
-  const { data, error, setNewRequestBody } = useDelete(
-    `http://localhost:8080/todo/${todoId}`
-  );
+  const [todoId,setTodoId]=useState(null);
+
+  const { data,error, status,setNewRequestBody } =useDelete(`http://localhost:8080/todo/${todoId }`);
   const [isError, setIsError] = useState(false);
+
 
   const handleDeleteElement = () => {
     if (id) {
       setTodoId((prevId) => (id !== undefined ? id : prevId));
       setNewRequestBody({});
+      
     }
   };
-
+  
+  
+  
   useEffect(() => {
-    if (data?.status == 400 || data?.status == 406) {
-      setIsError(true);
-    } else if (data?.status == 200) {
-      setIsError(false);
+      if (status && (status == 400 || status == 406)) {
+        setIsError(true);
+      } else if (status && status==200){
 
-      navigate("/home");
-    }
+       
+        setIsError(false);
+
+        navigate("/home");
+      }
+    
   }, [data, error]);
+
 
   const handleCloseElement = () => {
     setIsShowComponent(false);

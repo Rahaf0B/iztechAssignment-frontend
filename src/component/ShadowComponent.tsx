@@ -1,10 +1,6 @@
 import React, { useContext, useEffect } from "react";
-import CloseIcon from "@mui/icons-material/Close";
-
 import styled from "styled-components";
-import TextField from "./TextField";
-import Button from "./Button";
-import { ChecklistRtlOutlined } from "@mui/icons-material";
+
 
 interface LayoutProps {
   showElement: boolean;

@@ -1,11 +1,7 @@
 import React from "react";
-import { BiSearch, BiFilter } from "react-icons/bi";
-import FilterAlt from "@mui/icons-material/FilterAlt";
-import DropMenu from "./DropMenu";
 import styled from "styled-components";
 import TableHeading from "./TableHeading";
 import TableContent from "./TableContent";
-import { DataContext, useDataContext } from "./MainHomeComponent";
 interface Row {
   id: number;
   title?: string;

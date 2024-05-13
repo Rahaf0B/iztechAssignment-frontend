@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Button from "../component/Button";
 import TextField from "../component/TextField";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ function ChangePassword() {
   const [isDataFilled, setIsDataFilled] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
 
-  const { data, error, setNewRequestBody } = usePatch(
+  const { data, error,status, setNewRequestBody } = usePatch(
     "http://localhost:8080/auth/change-password"
   );
   const { state } = useLocation();
@@ -24,6 +24,22 @@ function ChangePassword() {
     emailValue = email;
   }
 
+
+  useEffect(() => {
+    if (
+      status == 400 ||
+      status == 404 
+    ) {
+      setIsError(true);
+    } else if (data) {
+      navigate("/");
+      setIsError(false);
+    } else {
+      if (isDataFilled) {
+        setIsError(true);
+      }
+    }
+  }, [data, error, navigate, status]);
   const handleSubmit = (event: any) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -36,7 +52,6 @@ function ChangePassword() {
         email: emailValue,
         password: password,
       });
-      navigate("/");
     } else {
       setIsError(true);
     }

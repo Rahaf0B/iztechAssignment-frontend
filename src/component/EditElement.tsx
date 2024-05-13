@@ -9,7 +9,6 @@ import {
   EditComponentContextType,
 } from "./TableContent";
 import ShadowComponent from "./ShadowComponent";
-import { usePatch } from "../CustomHook/APIHook";
 interface LayoutProps {
   title?: string;
   description?: string;
@@ -27,7 +26,6 @@ function EditElement(props: LayoutProps) {
     setNewRequestBody,
   } = useEditComponentContext() as EditComponentContextType;
 
-  const [isError, setIsError] = useState(false);
 
   const handleSubmit = (event: any) => {
     event.preventDefault();

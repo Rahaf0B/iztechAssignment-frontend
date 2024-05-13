@@ -48,7 +48,6 @@ function TableFooter(props: layoutProps) {
       color: "#5d5e65  ",
     },
   };
-  const totalPages = Math.ceil(props.totalItems / props.itemsPerPage);
 
   const handleNextPage = () => {
     if (Math.ceil(totalItemsCount / ItemCountToDisplay) > pageNumber) {

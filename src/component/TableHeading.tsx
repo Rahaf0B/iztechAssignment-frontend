@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { BiSearch, BiFilter } from "react-icons/bi";
 import FilterAlt from "@mui/icons-material/FilterAlt";
 import DropMenu from "./DropMenu";
 import styled from "styled-components";
 import TextField from "./TextField";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import SearchIcon from "@mui/icons-material/Search";
+
 
 import Button from "./Button";
 import {
