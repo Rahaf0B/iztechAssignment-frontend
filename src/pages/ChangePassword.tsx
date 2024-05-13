@@ -9,14 +9,13 @@ import person from "../utlis/assets/iconwrappeh.svg";
 import { usePatch } from "../CustomHook/APIHook";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
-
 function ChangePassword() {
   const navigate = useNavigate();
   const [isDataFilled, setIsDataFilled] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
 
   const { data, error, setNewRequestBody } = usePatch(
-    "http://localhost:8080/auth/validate-opt-code"
+    "http://localhost:8080/auth/change-password"
   );
   const { state } = useLocation();
   let emailValue = "";
@@ -37,7 +36,7 @@ function ChangePassword() {
         email: emailValue,
         password: password,
       });
-      navigate(`/changePassword`, { state: { email: emailValue } });
+      navigate("/");
     } else {
       setIsError(true);
     }
@@ -74,21 +73,20 @@ function ChangePassword() {
     marginBottom: "40px",
   });
 
-  const ContainerIconDevider=styled("div")({
-    display:"flex",
-    height:"100%",
+  const ContainerIconDevider = styled("div")({
+    display: "flex",
+    height: "100%",
     zIndex: 1,
     position: "absolute",
     alignItems: "center",
-    gap:"14px",
-    marginLeft:"15px"
-    
-      })
-      const DividerVertical =styled("div")({
-        width: "1px",
-        height: "40px",
-        backgroundColor: "#cfd9e0",
-      })
+    gap: "14px",
+    marginLeft: "15px",
+  });
+  const DividerVertical = styled("div")({
+    width: "1px",
+    height: "40px",
+    backgroundColor: "#cfd9e0",
+  });
 
   return (
     <SideContainer

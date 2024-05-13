@@ -14,13 +14,14 @@ function CheckOptCode() {
   const [isDataFilled, setIsDataFilled] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
 
-  const { data, error, setNewRequestBody } = usePut(
+  const { data, error, status, setNewRequestBody } = usePut(
     "http://localhost:8080/auth/validate-opt-code"
   );
 
   const {
     data: optData,
     error: errorOpt,
+    status: statusOpt,
     setNewRequestBody: setSendOptCode,
   } = usePut("http://localhost:8080/auth/send-opt-code");
 
@@ -32,24 +33,22 @@ function CheckOptCode() {
   }
 
   useEffect(() => {
-    if (data) {
-      if (
-        data.status == 400 ||
-        data.status == 404 ||
-        optData?.status == 400 ||
-        optData?.status == 404
-      ) {
-        setIsError(true);
-      } else {
-        navigate("/checkOptCode");
-        setIsError(false);
-      }
+    if (
+      status == 400 ||
+      status == 404 ||
+      statusOpt == 400 ||
+      statusOpt == 404
+    ) {
+      setIsError(true);
+    } else if (data) {
+      navigate("/checkOptCode");
+      setIsError(false);
     } else {
       if (isDataFilled) {
         setIsError(true);
       }
     }
-  }, [data, error, navigate, optData, errorOpt]);
+  }, [data, error, navigate, status, optData, errorOpt, statusOpt]);
 
   const handleResendCode = () => {
     setSendOptCode({

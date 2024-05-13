@@ -8,7 +8,11 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchIcon from "@mui/icons-material/Search";
 
 import Button from "./Button";
-import { useAddComponentContext } from "./MainHomeComponent";
+import {
+  SearchContextType,
+  useAddComponentContext,
+  useSearchComponentContext,
+} from "./MainHomeComponent";
 type AddComponentContextType = {
   isShowComponent?: boolean;
   setIsShowComponent?: any;
@@ -17,9 +21,19 @@ const TableHeading = () => {
   const { isShowComponent, setIsShowComponent } =
     useAddComponentContext() as AddComponentContextType;
 
+  const { searchText, setSearchText } =
+    useSearchComponentContext() as SearchContextType;
+
   const toggleAddComponent = () => {
     setIsShowComponent(!isShowComponent);
   };
+
+  const enterListenHandler = (event) => {
+    if (event.key === "Enter") {
+      setSearchText(event.target.value);
+    }
+  };
+
   const options = {
     optionOne: {
       title: "عرض الجميع",
@@ -90,6 +104,7 @@ const TableHeading = () => {
           borderRadius={10}
           border={"solid 1px #cbd5e0"}
           value={""}
+          onKeyDown={enterListenHandler}
         />
         <DropMenu
           options={options}

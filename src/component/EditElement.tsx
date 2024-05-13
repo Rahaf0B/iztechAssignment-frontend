@@ -25,8 +25,6 @@ function EditElement(props: LayoutProps) {
     data,
     error,
     setNewRequestBody,
-    editItem,
-    setEditItem,
   } = useEditComponentContext() as EditComponentContextType;
 
   const [isError, setIsError] = useState(false);
@@ -43,12 +41,10 @@ function EditElement(props: LayoutProps) {
       ...(description && { description }),
       session_token: localStorage.getItem("session_token"),
     });
-    setEditItem(true);
   };
 
   const handleCloseElement = () => {
     setIsShowComponent(false);
-    setEditItem(false);
   };
 
   const ContainerLayout = styled("div")({

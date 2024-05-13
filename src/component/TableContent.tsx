@@ -24,6 +24,7 @@ import { useGet, usePatch } from "../CustomHook/APIHook";
 import EditElement from "./EditElement";
 import { useDataContext, DataContextType } from "./MainHomeComponent";
 import DeleteElement from "./DeleteElement";
+import { useNavigate } from "react-router-dom";
 
 interface Row {
   id: number;
@@ -69,20 +70,8 @@ export const useDeleteComponentContext = () =>
   useContext(DeleteComponentContext as undefined);
 
 function TableContent() {
-  const {
-    data,
-    todoId,
-    setTodoId,
-    editData,
-    errorEditData,
-    setEditRequest,
-    setNewDeleteRequestBody,
-    deleteError,
-    editItem,
-    setDeleteItem,
-    deleteItem,
-    setEditItem,
-  } = useDataContext() as DataContextType;
+  const { data, todoId, setTodoId, editData, errorEditData, setEditRequest } =
+    useDataContext() as DataContextType;
 
   const [sortColumn, setSortColumn] = React.useState<keyof Row>("id");
   const [sortOrder, setSortOrder] = React.useState("asc");
@@ -90,23 +79,17 @@ function TableContent() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [showComponentEdit, setShowComponentEdit] = useState(false);
   const [showComponentDelete, setShowComponentDelete] = useState(false);
-  // const [todoId, setTodoId] = useState<number | undefined>(undefined);
   const [todoTitle, setTodoTitle] = useState<string | undefined>(undefined);
   const [todoDescription, setTodoDescription] = useState<string | undefined>(
     undefined
   );
-
-  const {
-    data: editedData,
-    error,
-    setNewRequestBody,
-  } = usePatch(`http://localhost:8080/todo/edit-todo/${todoId}`);
+  const [isError, setIsError] = useState(false);
 
   const handelOnOpenMenu = (id: number) => {
     setTodoId((prevId) => (id !== undefined ? id : prevId));
   };
   const handleChangeStatus = (status: boolean) => {
-    setNewRequestBody({
+    setEditRequest({
       status: status,
       session_token: localStorage.getItem("session_token"),
     });
@@ -412,8 +395,6 @@ function TableContent() {
           data: editData,
           error: errorEditData,
           setNewRequestBody: setEditRequest,
-          editItem,
-          setEditItem,
         }}
       >
         <EditElement></EditElement>
@@ -424,11 +405,7 @@ function TableContent() {
           isShowComponent: showComponentDelete,
           setIsShowComponent: setShowComponentDelete,
           id: todoId,
-          setNewDeleteRequestBody,
-          deleteError,
           setTodoId,
-          deleteItem,
-          setDeleteItem,
         }}
       >
         <DeleteElement></DeleteElement>

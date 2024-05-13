@@ -15,25 +15,23 @@ function SignIn() {
 
   const [isError, setIsError] = React.useState(false);
   const [isDataFilled, setIsDataFilled] = React.useState(false);
-
-  const { data, error, setNewRequestBody } = usePost(
+  localStorage.clear();
+  const { data, error, status, setNewRequestBody } = usePost(
     "http://localhost:8080/auth/login"
   );
   useEffect(() => {
-    if (data) {
-      if (data.status == 400 || data.status == 406) {
-        setIsError(true);
-      } else {
-        signIn(data?.session_token as string);
-        navigate("/home");
-        setIsError(false);
-      }
+    if (status == 400 || status == 406) {
+      setIsError(true);
+    } else if (data) {
+      signIn(data?.session_token as string);
+      navigate("/home");
+      setIsError(false);
     } else {
       if (isDataFilled) {
         setIsError(true);
       }
     }
-  }, [data, error, navigate]);
+  }, [data, error, status, navigate]);
   const handleSubmit = (event: any) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);

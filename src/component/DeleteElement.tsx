@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import styled from "styled-components";
 import TextField from "./TextField";
 import Button from "./Button";
+import { useNavigate } from "react-router-dom";
 
 import deleteImage from "../utlis/assets/delete.png";
 import ShadowComponent from "./ShadowComponent";
@@ -14,28 +15,35 @@ import {
 import { useDelete } from "../CustomHook/APIHook";
 
 function DeleteElement() {
-  const {
-    isShowComponent,
-    setIsShowComponent,
-    id,
-    setNewDeleteRequestBody,
-    deleteError,
-    setTodoId,
-    deleteItem,
-    setDeleteItem,
-  } = useDeleteComponentContext() as DeleteComponentContextType;
+  const { isShowComponent, setIsShowComponent, id } =
+    useDeleteComponentContext() as DeleteComponentContextType;
+  const navigate = useNavigate();
+
+  const [todoId, setTodoId] = useState(null);
+
+  const { data, error, setNewRequestBody } = useDelete(
+    `http://localhost:8080/todo/${todoId}`
+  );
+  const [isError, setIsError] = useState(false);
 
   const handleDeleteElement = () => {
     if (id) {
-      setDeleteItem(true);
-      setTodoId(id);
-      setNewDeleteRequestBody();
-      setDeleteItem(false);
+      setTodoId((prevId) => (id !== undefined ? id : prevId));
+      setNewRequestBody({});
     }
   };
 
+  useEffect(() => {
+    if (data?.status == 400 || data?.status == 406) {
+      setIsError(true);
+    } else if (data?.status == 200) {
+      setIsError(false);
+
+      navigate("/home");
+    }
+  }, [data, error]);
+
   const handleCloseElement = () => {
-    setDeleteItem(false);
     setIsShowComponent(false);
   };
   const ContainerLayout = styled("div")({

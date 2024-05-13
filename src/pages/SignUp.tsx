@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 import SideContainer from "../component/SideContainer";
 import signupImg from "../utlis/assets/sign up.png";
 import styled, { css } from "styled-components";
-import person from "../utlis/assets/iconwrappeh.svg";
 import { usePatch, usePost } from "../CustomHook/APIHook";
 import { signIn } from "../Providers/UserProvider";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import AddImage from "../component/AddImage";
 
 interface UserData {
   user_name: string;
@@ -24,82 +24,76 @@ function SignUp() {
 
   const [isError, setIsError] = useState(false);
   const [isDataFilled, setIsDataFilled] = useState(false);
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
-  const memoizedFile = useMemo(
-    () => fileInputRef.current?.files?.[0],
-    [fileInputRef.current]
-  );
+  const [userData, setUserData] = useState<UserData | null>({
+    user_name: null,
+    email: null,
+    password: null,
+  });
 
   var {
     data,
     error,
+    status,
     setNewRequestBody: setPostBody,
   } = usePost("http://localhost:8080/auth/register-user");
 
   var {
-    data,
-    error,
+    data: patchData,
+    error: patchError,
+    status: patchStatus,
     setNewRequestBody: setPatchBody,
   } = usePatch("http://localhost:8080/auth/edit-profile-picture");
 
+  localStorage.clear();
+
   useEffect(() => {
-    if (data) {
-      if (data.status == 400 || data.status == 409) {
+    if (patchStatus == 200) {
+      navigate("/home");
+    } else {
+      if (localStorage.getItem("img_file")) {
         setIsError(true);
-      } else {
-        signIn(data?.session_token as string);
-        navigate("/home");
-        setIsError(false);
       }
+    }
+  }, [patchData, patchError, patchStatus]);
+  useEffect(() => {
+    if (status == 400 || status == 409) {
+      setIsError(true);
+    } else if (data) {
+      signIn(data?.session_token as string);
+
+      if (
+        localStorage.getItem("session_token") &&
+        localStorage.getItem("img_file")
+      ) {
+        setPatchBody({
+          image: localStorage.getItem("img_file"),
+          session_token: localStorage.getItem("session_token"),
+          contentType: "multipart/form-data",
+        });
+      }
+      navigate("/home");
+      setIsError(false);
     } else {
       if (isDataFilled) {
         setIsError(true);
       }
     }
-  }, [data, error, navigate]);
+  }, [data, error, status, navigate]);
 
-  const handleChange = (event: any) => {
-    if (event.target !== fileInputRef.current) {
-      const key = event.target.id.split("-")[0];
-      if (userData) {
-        setUserData?.({ ...userData, [key]: event.target.value });
-      }
-    }
-  };
   const handleSubmit = (event: any) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    const name = data.get("Name");
-    const email = data.get("Email");
+    const name = data.get("user-name");
+    const email = data.get("email");
     const password = data.get("password");
-
     if (email && password && name) {
       setIsDataFilled(true);
-      setPostBody({
-        email: email,
-        password: password,
-        user_name: name,
-      });
-      if (localStorage.getItem("session_token") && memoizedFile) {
-        setPatchBody({
-          image: memoizedFile,
-          session_token: localStorage.getItem("session_token"),
-          contentType: "multipart/form-data",
-        });
-      }
+      setPostBody({ email: email, password: password, user_name: name });
     } else {
       setIsError(true);
     }
   };
-
-  function handleClick() {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  }
 
   const LabelTextNoAccount = styled("h1")({
     height: "12px",
@@ -132,59 +126,20 @@ function SignUp() {
     marginBottom: "18px",
   });
 
-  const ContainerAddImage = styled("div")({
-    alignSelf: "stretch",
+  const ContainerIconDevider = styled("div")({
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    gap: "16px",
-    borderRadius: "12px",
-    marginBottom: "45px",
-  });
-  const ImgElement = styled("img")({
-    width: "60px",
-    height: "60px",
-    padding: 0,
-    borderRadius: "999px",
-    backgroundColor: "rgba(203, 213, 224, 0.7)",
-  });
-  const ContainerLabelSpan = styled("div")({
-    display: "flex",
-    marginBottom: "14px",
-    flexDirection: "row-reverse",
-    gap: "5px",
-  });
-  const SpanLabelImage = styled("span")({
-    color: "#67728a  ",
-    fontSize: "14px",
-  });
-  const LabelImage = styled("h1")({
-    fontSize: "16px",
-    fontWeight: 500,
-    fontStretch: "normal",
-    fontStyle: "normal",
-    lineHeight: 1.25,
-    letterSpacing: "-0.15px",
-    textAlign: "left",
-    color: "#171c26",
-  });
-
-  const ContainerIconDevider=styled("div")({
-    display:"flex",
-    height:"100%",
+    height: "100%",
     zIndex: 1,
     position: "absolute",
     alignItems: "center",
-    gap:"14px",
-    marginLeft:"15px"
-    
-      })
-      const DividerVertical =styled("div")({
-        width: "1px",
-        height: "40px",
-        backgroundColor: "#cfd9e0",
-      })
+    gap: "14px",
+    marginLeft: "15px",
+  });
+  const DividerVertical = styled("div")({
+    width: "1px",
+    height: "40px",
+    backgroundColor: "#cfd9e0",
+  });
   return (
     <SideContainer
       header={"هيا لنبدء رحلتك سويا"}
@@ -205,7 +160,7 @@ function SignUp() {
             >
               <TextField
                 id="user_name-signup"
-                name="Name"
+                name="user-name"
                 labelClassName="label-name-login-signup"
                 className="TextField-name-login-signup"
                 placeholder="معاوية"
@@ -221,7 +176,7 @@ function SignUp() {
               />
               <TextField
                 id="email-signup"
-                name="Email"
+                name="email"
                 labelClassName="label-Email-login-signup"
                 className="TextField-Email-login-signup"
                 placeholder="example@gmail.com"
@@ -276,34 +231,9 @@ function SignUp() {
                   يجب ان تحتوي كلمة المرور على رموز وأرقام
                 </PasswordLabelDescription>
               </PasswordLabelContainer>
-              <ContainerLabelSpan>
-                <LabelImage>الصورة الشخصية</LabelImage>
-                <SpanLabelImage>{"(اختياري)"}</SpanLabelImage>
-              </ContainerLabelSpan>
-              <ContainerAddImage>
-                <Button
-                  className="options-button"
-                  id="btn-forget-password"
-                  backgroundColor="rgba(0, 147, 159, 0.1)"
-                  label="ارفاق صورة"
-                  height={32}
-                  width={95}
-                  color="#00939f"
-                  borderRadius={5}
-                  handleClick={handleClick}
-                ></Button>
-                <input
-                  type="file"
-                  id="file-upload"
-                  ref={fileInputRef}
-                  style={{ display: "none" }}
-                />
-                <ImgElement
-                  src={
-                    memoizedFile ? URL.createObjectURL(memoizedFile) : person
-                  }
-                />
-              </ContainerAddImage>
+
+              <AddImage></AddImage>
+
               <div className="div-btn-login-form-login">
                 <Button
                   className="options-button"

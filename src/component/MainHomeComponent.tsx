@@ -39,7 +39,10 @@ interface Row {
   description?: string;
   status: boolean;
 }
-
+export type SearchContextType = {
+  searchText: string;
+  setSearchText: any;
+};
 export type DataContextType = {
   data: Row[];
   todoId: number;
@@ -48,11 +51,6 @@ export type DataContextType = {
   errorEditData?: any;
   setEditRequest?: any;
   setNewDeleteRequestBody?: any;
-  deleteError?: any;
-  editItem?: any;
-  setEditItem?: any;
-  deleteItem?: any;
-  setDeleteItem?: any;
 };
 
 export const AddComponentContext = createContext(
@@ -70,6 +68,12 @@ export const PaginationComponentContext = createContext(
 export const usePaginationComponentContext = () =>
   useContext(PaginationComponentContext as undefined);
 
+export const SearchComponentContext = createContext(
+  undefined as SearchContextType
+);
+export const useSearchComponentContext = () =>
+  useContext(SearchComponentContext as undefined);
+
 function MainHomeComponent() {
   const navigate = useNavigate();
   const [isShowComponent, setIsShowComponent] = useState(false);
@@ -77,21 +81,31 @@ function MainHomeComponent() {
   const [numberOfItems, setNumberOfItems] = useState(15);
   const [numberOfItemToDisplay, setNumberOfItemToDisplay] = useState(15);
   const [todoId, setTodoId] = useState<number | undefined>(undefined);
-  const [deleteItem, setDeleteItem] = useState<boolean | undefined>(false);
-  const [editItem, setEditItem] = useState<boolean | undefined>(false);
-
-  const { data: todoInfo, loading: todoLoading } = useGet(
+  const [searchText, setSearchText] = useState(null);
+  const {
+    data: todoInfo,
+    loading: todoLoading,
+    status: todoStatus,
+  } = useGet(
     `http://localhost:8080/todo/?number_of_items=${numberOfItems}&page_number=${pageNumber}`
+  );
+
+  const {
+    data: searchInfo,
+    loading: searchLoading,
+    status: searchStatus,
+  } = useGet(
+    `http://localhost:8080/todo/search/?title=${searchText}&number_of_items=${numberOfItems}&page_number=${pageNumber}`
   );
 
   const {
     data: editData,
     error: errorEditData,
     setNewRequestBody: setEditRequest,
+    status: editStatue,
   } = usePatch(`http://localhost:8080/todo/edit-todo/${todoId}`);
-  const { error: deleteError, setNewRequestBody: setNewDeleteRequestBody } =
-    useDelete(`http://localhost:8080/todo/${deleteItem ? todoId : -1}`);
-  const { data, error, setNewRequestBody } = usePost(
+
+  const { data, error, status, setNewRequestBody } = usePost(
     "http://localhost:8080/todo/add-todo"
   );
 
@@ -103,30 +117,36 @@ function MainHomeComponent() {
       setTodoData(todoInfo["items"]);
       setNumberOfItems(todoInfo["numberOfItems"]);
     }
-  }, [
-    todoInfo,
-    todoLoading,
-    numberOfItemToDisplay,
-    pageNumber,
-    setNewRequestBody,
-    setEditRequest,
-    setNewDeleteRequestBody,
-    editItem,
-    deleteItem,
-  ]);
+  }, [todoInfo, todoLoading, numberOfItemToDisplay, pageNumber]);
 
   useEffect(() => {
-    if (data) {
-      if (data.status == 400 || data.status == 406) {
-        setIsError(true);
-      } else {
-        setIsError(false);
+    if (searchText && !searchLoading && searchInfo) {
+      setTodoData(searchInfo["items"]);
+      setNumberOfItems(searchInfo["numberOfItems"]);
+    }
+  }, [searchInfo, searchLoading]);
 
-        navigate("/home");
-      }
+  useEffect(() => {
+    if (status == 400 || status == 406) {
+      setIsError(true);
+    } else if (data) {
+      setIsError(false);
+
+      navigate("/home");
     } else {
     }
-  }, [data, error]);
+  }, [data, status, error]);
+
+  useEffect(() => {
+    if (editStatue == 400 || editStatue == 406) {
+      setIsError(true);
+    } else if (editData) {
+      setIsError(false);
+
+      navigate("/home");
+    } else {
+    }
+  }, [editData, editStatue, errorEditData]);
 
   const LayoutComponent = styled("div")({
     backgroundColor: "#fafafa",
@@ -161,15 +181,13 @@ function MainHomeComponent() {
                 editData: editData,
                 errorEditData: errorEditData,
                 setEditRequest: setEditRequest,
-                setNewDeleteRequestBody,
-                deleteError,
-                editItem,
-                setDeleteItem,
-                deleteItem,
-                setEditItem,
               }}
             >
-              <Table></Table>
+              <SearchComponentContext.Provider
+                value={{ searchText, setSearchText }}
+              >
+                <Table></Table>
+              </SearchComponentContext.Provider>
             </DataContext.Provider>
           </PaginationComponentContext.Provider>
         ) : (

@@ -17,24 +17,22 @@ function ForgetPassword() {
   const [isDataFilled, setIsDataFilled] = useState(false);
   const [isError, setIsError] = useState(false);
   const [email, setEmail] = useState("");
-  const { data, error, setNewRequestBody } = usePut(
+  const { data, error, status, setNewRequestBody } = usePut(
     "http://localhost:8080/auth/send-opt-code"
   );
 
   useEffect(() => {
-    if (data) {
-      if (data.status == 400 || data.status == 404) {
-        setIsError(true);
-      } else {
-        navigate(`/checkOptCode`, { state: { email: email } });
-        setIsError(false);
-      }
+    if (status == 400 || status == 404) {
+      setIsError(true);
+    } else if (data) {
+      navigate(`/checkOptCode`, { state: { email: email } });
+      setIsError(false);
     } else {
       if (isDataFilled) {
         setIsError(true);
       }
     }
-  }, [data, error, navigate]);
+  }, [data, error, status, navigate]);
 
   const handleSubmit = (event: any) => {
     event.preventDefault();

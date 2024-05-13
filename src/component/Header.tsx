@@ -3,19 +3,31 @@ import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import websiteIcon from "../utlis/assets/logo.svg";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { useNavigate } from "react-router-dom";
 
 import DropMenu from "./DropMenu";
 function Header() {
+  const navigate = useNavigate();
+
   const logout = () => {
     localStorage.clear();
+    navigate("/");
   };
   const options = {
     optionOne: {
       title: "تسجيل الخروج",
-      handler: () => logout,
+      handler: logout,
       color: "#e00909 ",
     },
   };
+
+  function convertStringToFile() {
+    const fileData = localStorage.getItem("img_file");
+
+    const blob = new Blob([fileData], { type: "application/octet-stream" });
+    const objectURL = URL.createObjectURL(blob);
+    return objectURL;
+  }
 
   const Header = styled("header")({
     width: "100%",
@@ -62,7 +74,9 @@ function Header() {
           elementBorder="none"
           elementBorderRadius={0}
         ></DropMenu>
-        <ImageContainer></ImageContainer>
+        <ImageContainer
+          src={localStorage.getItem("img_file") ? convertStringToFile() : null}
+        ></ImageContainer>
       </ContainerOptions>
       <IconContainer src={websiteIcon} />
     </Header>
